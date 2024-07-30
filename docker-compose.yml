@@ -1,0 +1,28 @@
+version: '3.9' # Update to a more recent version
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5000" # Changed host port to 5001
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://flightuser:flightpass@db:5432/flightstatus
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3001:3000" # Changed host port to 3001
+    depends_on:
+      - backend
+    command: sh -c "npm install && npm start" # Ensure npm packages are installed
+
+  db:
+    build: ./database
+    ports:
+      - "5435:5432" # Host port changed to 5435
+    environment:
+      POSTGRES_USER: flightuser
+      POSTGRES_PASSWORD: flightpass
+      POSTGRES_DB: flightstatus
